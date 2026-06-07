@@ -1,9 +1,15 @@
+"use client";
 import classes from "./page.module.css";
 import ImagePicker from "@/components/meals/image-picker";
 import MealsFormSubmit from "@/components/meals/meals-form-submit";
 import { shareMeal } from "@/lib/actions";
+import { useActionState } from "react";
 
 export default function ShareMealPage() {
+  const [state, formAction] = useActionState(shareMeal, {
+    message: null,
+    values: {},
+  });
   return (
     <>
       <header className={classes.header}>
@@ -13,24 +19,48 @@ export default function ShareMealPage() {
         <p>Or any other meal you feel needs sharing!</p>
       </header>
       <main className={classes.main}>
-        <form className={classes.form} action={shareMeal}>
+        <form className={classes.form} action={formAction}>
           <div className={classes.row}>
             <p>
               <label htmlFor="name">Your name</label>
-              <input type="text" id="name" name="name" required />
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                defaultValue={state.values?.creator}
+              />
             </p>
             <p>
               <label htmlFor="email">Your email</label>
-              <input type="email" id="email" name="email" required />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                defaultValue={state.values?.creator_email}
+              />
             </p>
           </div>
           <p>
             <label htmlFor="title">Title</label>
-            <input type="text" id="title" name="title" required />
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              defaultValue={state.values?.title}
+            />
           </p>
           <p>
             <label htmlFor="summary">Short Summary</label>
-            <input type="text" id="summary" name="summary" required />
+            <input
+              type="text"
+              id="summary"
+              name="summary"
+              required
+              defaultValue={state.values?.summary}
+            />
           </p>
           <p>
             <label htmlFor="instructions">Instructions</label>
@@ -39,9 +69,11 @@ export default function ShareMealPage() {
               name="instructions"
               rows="10"
               required
+              defaultValue={state.values?.instructions}
             ></textarea>
           </p>
           <ImagePicker label="Your image" name="image"></ImagePicker>
+          {state.message && <p>{state.message}</p>}
           <p className={classes.actions}>
             <MealsFormSubmit />
           </p>
